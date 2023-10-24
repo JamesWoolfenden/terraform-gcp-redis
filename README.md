@@ -35,7 +35,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | n/a |
+| <a name="provider_google"></a> [google](#provider\_google) | 5.3.0 |
 
 ## Modules
 
@@ -45,17 +45,13 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [google_artifact_registry_repository.pike](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository) | resource |
-| [google_kms_crypto_key_iam_member.pike](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key_iam_member) | resource |
+| [google_redis_instance.pike](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/redis_instance) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | This is to help you add tags to your cloud objects | `map(any)` | n/a | yes |
-| <a name="input_key"></a> [key](#input\_key) | n/a | `any` | n/a | yes |
-| <a name="input_project"></a> [project](#input\_project) | n/a | `any` | n/a | yes |
-| <a name="input_repository"></a> [repository](#input\_repository) | (optional) describe your variable | <pre>object({<br>    id          = string<br>    description = string<br>    format      = string<br>    location    = string<br>  })</pre> | n/a | yes |
+| <a name="input_cache"></a> [cache](#input\_cache) | n/a | <pre>object({<br>    name           = string,<br>    memory_size_gb = number<br>  })</pre> | n/a | yes |
 
 ## Outputs
 

@@ -1,7 +1,7 @@
 module "redis" {
-  source      = "../../"
+  source = "../../"
   cache = {
-    name="counter"
+    name           = "counter"
     memory_size_gb = 1
   }
 }

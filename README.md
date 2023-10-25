@@ -51,7 +51,9 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cache"></a> [cache](#input\_cache) | n/a | <pre>object({<br>    name           = string,<br>    memory_size_gb = number<br>  })</pre> | n/a | yes |
+| <a name="input_cache"></a> [cache](#input\_cache) | n/a | <pre>object({<br>    name                    = string<br>    memory_size_gb          = number<br>    tier                    = string<br>    location_id             = string<br>    alternative_location_id = string<br>    authorized_network      = string<br>    redis_version           = string<br>    display_name            = string<br>    reserved_ip_range       = string<br>    customer_managed_key    = string<br>  })</pre> | n/a | yes |
+| <a name="input_labels"></a> [labels](#input\_labels) | n/a | `map(any)` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
 
 ## Outputs
 

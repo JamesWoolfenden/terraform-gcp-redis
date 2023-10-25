@@ -54,4 +54,9 @@ repos:
     rev: v0.1.0
     hooks:
       - id: ghat-go
+        name: swot
         args: ["swot","-d", "."]
+      - id: ghat-go
+        name: sift
+        args: ["sift","-d", "."]
+        always_run: true

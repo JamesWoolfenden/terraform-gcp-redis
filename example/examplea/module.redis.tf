@@ -19,7 +19,7 @@ module "redis" {
   region = "us-central1"
 }
 
-resource "google_kms_key_ring" "redis_keyring" {
+data "google_kms_key_ring" "redis_keyring" {
   name     = "redis-keyring"
   location = "us-central1"
 }

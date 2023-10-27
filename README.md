@@ -23,8 +23,9 @@ module "redis" {
 ## Auth
 
 ```bash
-gcloud auth application-default login
+gcloud auth application-default login --project yourproj
 ```
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -35,7 +36,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 5.3.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | n/a |
 
 ## Modules
 

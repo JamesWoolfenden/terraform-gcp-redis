@@ -26,8 +26,12 @@ data "google_kms_key_ring" "redis_keyring" {
 
 resource "google_kms_crypto_key" "redis_key" {
   name            = "redis-key"
-  key_ring        = google_kms_key_ring.redis_keyring.id
+  key_ring        = data.google_kms_key_ring.redis_keyring.id
   rotation_period = "7776000s"
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 

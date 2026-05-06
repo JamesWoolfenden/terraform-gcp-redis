@@ -1,4 +1,4 @@
-default_language_version:
+﻿default_language_version:
     python: python3.11
 repos:
     - hooks:
@@ -41,7 +41,7 @@ repos:
         - id: tf2docs
           language_version: python3.11
       repo: https://github.com/jameswoolfenden/pre-commit
-      rev: e022e4ac6ed682e95d1e813ee62d4fece371014b # v0.1.53
+      rev: v0.1.61
     - hooks:
         - id: checkov
           entry: checkov -d example/examplea --external-checks-dir checkov --download-external-modules true --compact

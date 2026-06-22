@@ -46,9 +46,9 @@ resource "google_kms_crypto_key" "redis_key" {
 # and not user-suppliable — every caller in every project derives the same value.
 resource "google_kms_crypto_key_iam_member" "service" {
   crypto_key_id = google_kms_crypto_key.redis_key.id
-  member        = "serviceAccount:service-${data.google_project.project.number}@cloud-redis.iam.gserviceaccount.com"
+  member        = "serviceAccount:service-${data.google_project.this.number}@cloud-redis.iam.gserviceaccount.com"
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
 }
 
-data "google_project" "project" {
+data "google_project" "this" {
 }

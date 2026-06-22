@@ -124,7 +124,6 @@ module "redis" {
 gcloud auth application-default login --project yourproj
 ```
 
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 

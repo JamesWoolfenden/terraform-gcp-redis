@@ -12,7 +12,7 @@ resource "google_redis_instance" "pike" {
   display_name            = var.cache.display_name
   reserved_ip_range       = var.cache.reserved_ip_range
   customer_managed_key    = var.cache.customer_managed_key
-  connect_mode            = var.cache.connect_mode
+  connect_mode            = "PRIVATE_SERVICE_ACCESS"
   replica_count           = var.cache.replica_count
   read_replicas_mode      = var.cache.read_replicas_mode
   redis_configs           = var.cache.redis_configs

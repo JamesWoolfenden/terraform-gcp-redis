@@ -1,22 +1,25 @@
-# This file is maintained automatically by "terraform init".
+# This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/hashicorp/google" {
+provider "registry.opentofu.org/hashicorp/google" {
   version     = "7.30.0"
   constraints = "7.30.0"
   hashes = [
-    "h1:3Qxi6Pj4WeqzgKsejGqwx0S3XxYDlC0ykBU6SQ6t25A=",
-    "zh:0cda2cc03f7bf000d9bc66bc0fab621de4c104b329cab348e0ceb6146ab27251",
-    "zh:2c75a1ea53b21646681e49fbdf0a599817c2f400f1e73d7779f0e3e1d230e6f3",
-    "zh:34ab9dab67230adaee6a9cd6861cba969555777ca6eb0ae1d2ac7b1f3cb73832",
-    "zh:45d5d7ee38fb7bf58dd19b774dd637f3cb9caef1d1930dde594467dde7fdea50",
-    "zh:651ffd36697d8268471d50d0fae664549b7f1e627c03d6e90f80172947f7b1d4",
-    "zh:8557db0beb201ba8ba70a7a38ba8d1ce9ffb9e98c616b89f6e3c2203e0528803",
-    "zh:b6a2e53809e0827cb7c47b1279c3511223898f7e3c1536f74ba057d99c72c2e9",
-    "zh:bf4aea9d1eb663df9d458c974d2e3f9ca7f724280a103706d0a2b1597593c7af",
-    "zh:c5f0160e0658d75b4a339b18f7a544e721f3750e26b97fc4887e98b8e085ffff",
-    "zh:e41a215491c64b535eda5585139dab0a32836e631b470cc520ceef4aa9ce7748",
-    "zh:e490061ab15c6053c651a7996a9c77cacdb83528ed49d0460c9621e93ad7d0cf",
-    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "h1:2mAHvc+HqgNNfvOZKQO8L1x1YulF8j5iIeDBQV8O7xE=",
+    "zh:04362f6e3fdd9b71087c1552b0a4e0dc9f4e3e8949de27a67080010a1c772f21",
+    "zh:0e419af463fb047e4e6deb27b81267099811f759f5afef40ff3e79830af29195",
+    "zh:4940a4f7a7c51f0f6b3343ff560ecc539cacbf0eb211f6f67180df2f72db3f97",
+    "zh:582d4e7251cb24434cf6fa28b250f5705bd05478f1ea706725897fa370aae82f",
+    "zh:5c51e2aff19c189311939fc78646f59c7133a830e77f154f39f60e6e7a438fbd",
+    "zh:753df288a21089cab24f94ca585080bd9df104218becdf3878355c778652e713",
+    "zh:972fab3f530bdad40c1113e608a449628ea93d3e2c636e239263758b19887bc1",
+    "zh:9a4293467560207c1e75714efebcc977e58b2597825291be233f2a7a6b437409",
+    "zh:a5735edd6465f60c3eee8b430f01ff90066bd6d28f435cee9022deb14e8f25cf",
+    "zh:b6789320374378401630528bec4159a3cfe2fe8d0282158acb229e9162d0e3b5",
+    "zh:b83098ea7a849e416094331b9658e6ec738ee428ce5665d74fa28560cfd08cfa",
+    "zh:cee6e1c5bdd31c93ed5b03ea85efaf6f09510450eeb26ea5d8171e75b5e2fa57",
+    "zh:d41572c299f2494a283c082bcd9ab5ae2cfce3ba6ed0f4c0741e9ab7d9342df1",
+    "zh:eaa47323d4dd429f265c333fc9d05f89f5d9c7bc2b0c317b172b292e7e9f4d1f",
+    "zh:f71ab50ccbdece9c8cf20bac7bb1e79603ced01a7c4a537d0cb993d306d20bc2",
   ]
 }

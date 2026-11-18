@@ -15,5 +15,3 @@ concurrency:
 jobs:
   pr:
     uses: JamesWoolfenden/.github/.github/workflows/terraform-pr-gcp.yml@main
-    with:
-      service_account: terraform-gcp-redis@pike-477416.iam.gserviceaccount.com

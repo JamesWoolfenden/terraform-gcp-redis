@@ -22,6 +22,10 @@ resource "google_compute_global_address" "psa" {
   address_type  = "INTERNAL"
   prefix_length = 24
   network       = var.authorized_network
+  # Releasing the range breaks the PSA peering for every service on the VPC.
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_service_networking_connection" "psa" {
@@ -31,6 +35,8 @@ resource "google_service_networking_connection" "psa" {
 }
 
 # holden:ignore:HLD_TF_026
+# holden:ignore:HLD_TF_065: intentionally thin wrapper — the PSA range, peering and KMS
+# prerequisites are VPC/project-level and stay with the caller so they are not duplicated per instance.
 module "redis" {
   source = "../../"
 

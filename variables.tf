@@ -20,9 +20,9 @@ variable "cache" {
       minutes = number
     }))
     persistence_config = optional(object({
-      persistence_mode    = string
-      rdb_snapshot_period = optional(string)
-    }))
+      persistence_mode    = optional(string, "RDB")
+      rdb_snapshot_period = optional(string, "TWELVE_HOURS")
+    }), {})
   })
   description = "Configuration for the Cloud Memorystore Redis instance"
 
@@ -67,8 +67,12 @@ variable "cache" {
     error_message = "read replicas (read_replicas_mode = READ_REPLICAS_ENABLED or replica_count > 0) require tier STANDARD_HA"
   }
   validation {
-    condition     = var.cache.persistence_config == null || contains(["DISABLED", "RDB"], try(var.cache.persistence_config.persistence_mode, ""))
+    condition     = contains(["DISABLED", "RDB"], var.cache.persistence_config.persistence_mode)
     error_message = "cache.persistence_config.persistence_mode must be DISABLED or RDB"
+  }
+  validation {
+    condition     = contains(["ONE_HOUR", "SIX_HOURS", "TWELVE_HOURS", "TWENTY_FOUR_HOURS"], var.cache.persistence_config.rdb_snapshot_period)
+    error_message = "cache.persistence_config.rdb_snapshot_period must be ONE_HOUR, SIX_HOURS, TWELVE_HOURS or TWENTY_FOUR_HOURS"
   }
 }
 

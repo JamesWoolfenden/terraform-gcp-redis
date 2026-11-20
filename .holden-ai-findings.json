@@ -77,7 +77,7 @@
       "explanation": "persistence_config is optional and null, so instances run with persistence disabled: a full-instance failure or a BASIC-tier node loss drops all data with no snapshot to restore from. For a pure cache that is acceptable; for Redis used as a counter/session store (examplea is named \"counter\") it is data loss. Medium confidence: depends on the workload.",
       "file": "google_redis_instance.tf",
       "first_seen": "2026-11-20",
-      "fixable": false,
+      "fixable": true,
       "id": "HOLDEN_AI_004",
       "last_seen": "2026-11-20",
       "line": 1,
@@ -87,13 +87,13 @@
         "module.redis (example/exampleb)"
       ],
       "remediation": "Enable RDB snapshots where data must survive: persistence_config = { persistence_mode = \"RDB\", rdb_snapshot_period = \"TWELVE_HOURS\" }. Validate persistence_mode values in variables.tf.",
-      "resolution": "partially addressed, left open: examplea now enables RDB persistence (TWELVE_HOURS) and variables.tf validates persistence_mode. The module default stays opt-in: forcing persistence on every caller is a behaviour change with no benefit for pure-cache workloads.",
+      "resolution": "fixed: RDB persistence is now the module default. cache.persistence_config is optional with default {} and persistence_mode defaults to \"RDB\", rdb_snapshot_period to \"TWELVE_HOURS\"; the persistence_config block is always rendered. Opt out for pure-cache workloads with persistence_config = { persistence_mode = \"DISABLED\" } (snapshot period is then sent as null). rdb_snapshot_period is validated. Breaking: existing callers that omitted persistence_config get RDB enabled in place on next apply.",
       "resource": "google_redis_instance.pike",
       "severity": "LOW",
-      "status": "open",
+      "status": "fixed",
       "suppression_reason": null,
       "title": "RDB persistence is off by default and in every example",
-      "unresolved_since": "2026-11-20"
+      "unresolved_since": null
     },
     {
       "confidence": "high",

@@ -12,13 +12,13 @@ resource "google_redis_instance" "pike" {
   display_name            = var.cache.display_name
   reserved_ip_range       = var.cache.reserved_ip_range
   customer_managed_key    = var.cache.customer_managed_key
-  connect_mode            = coalesce(var.cache.connect_mode, "PRIVATE_SERVICE_ACCESS")
+  connect_mode            = local.connect_mode
   replica_count           = var.cache.replica_count
   read_replicas_mode      = var.cache.read_replicas_mode
   redis_configs           = var.cache.redis_configs
 
   dynamic "maintenance_policy" {
-    for_each = var.cache.maintenance_policy != null ? [var.cache.maintenance_policy] : []
+    for_each = local.maintenance_policy
     content {
       weekly_maintenance_window {
         day = maintenance_policy.value.day
@@ -32,11 +32,9 @@ resource "google_redis_instance" "pike" {
     }
   }
 
-  dynamic "persistence_config" {
-    for_each = var.cache.persistence_config != null ? [var.cache.persistence_config] : []
-    content {
-      persistence_mode    = persistence_config.value.persistence_mode
-      rdb_snapshot_period = persistence_config.value.rdb_snapshot_period
-    }
+  # RDB snapshots are on by default; opt out with persistence_config = { persistence_mode = "DISABLED" }.
+  persistence_config {
+    persistence_mode    = var.cache.persistence_config.persistence_mode
+    rdb_snapshot_period = local.rdb_snapshot_period
   }
 }

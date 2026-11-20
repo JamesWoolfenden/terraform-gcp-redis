@@ -1,6 +1,8 @@
 # holden:ignore:HLD_TF_026 — examples intentionally use ../../ to reference the local module root
 # holden:ignore:HLD_GCP_146 — this example deliberately demonstrates DIRECT_PEERING
 # (the supported alternative for networks without PSA infrastructure); see exampleb for PSA.
+# holden:ignore:HLD_TF_065: intentionally thin wrapper — the KMS key and its IAM grant are
+# caller-owned prerequisites so the module stays a single, for_each-able instance.
 module "redis" {
   source = "../../"
   cache = {

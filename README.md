@@ -15,6 +15,11 @@ Security controls enforced by the module (not configurable):
 - In-transit TLS (`SERVER_AUTHENTICATION`)
 - Customer-managed encryption key is **required**
 
+Defaults (overridable):
+
+- RDB persistence is **on** (`persistence_mode = "RDB"`, snapshots every `TWELVE_HOURS`).
+  For a pure, disposable cache opt out with `persistence_config = { persistence_mode = "DISABLED" }`.
+
 ### Direct Peering
 
 ```hcl
@@ -109,9 +114,10 @@ module "redis" {
       minutes = 0
     }
 
+    # RDB is the default; set this only to change the period or to opt out
+    # with persistence_mode = "DISABLED".
     persistence_config = {
-      persistence_mode    = "RDB"
-      rdb_snapshot_period = "TWELVE_HOURS"
+      rdb_snapshot_period = "SIX_HOURS"
     }
   }
   region = "us-central1"
@@ -149,7 +155,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
-| <a name="input_cache"></a> [cache](#input\_cache) | Configuration for the Cloud Memorystore Redis instance | <pre>object({<br/>    name                    = string<br/>    memory_size_gb          = number<br/>    tier                    = string<br/>    location_id             = string<br/>    alternative_location_id = optional(string)<br/>    authorized_network      = string<br/>    redis_version           = string<br/>    display_name            = optional(string)<br/>    reserved_ip_range       = optional(string)<br/>    customer_managed_key    = string<br/>    connect_mode            = optional(string)<br/>    replica_count           = optional(number)<br/>    read_replicas_mode      = optional(string)<br/>    redis_configs           = optional(map(string), {})<br/>    maintenance_policy = optional(object({<br/>      day     = string<br/>      hours   = number<br/>      minutes = number<br/>    }))<br/>    persistence_config = optional(object({<br/>      persistence_mode    = string<br/>      rdb_snapshot_period = optional(string)<br/>    }))<br/>  })</pre> | n/a | yes |
+| <a name="input_cache"></a> [cache](#input\_cache) | Configuration for the Cloud Memorystore Redis instance | <pre>object({<br/>    name                    = string<br/>    memory_size_gb          = number<br/>    tier                    = string<br/>    location_id             = string<br/>    alternative_location_id = optional(string)<br/>    authorized_network      = string<br/>    redis_version           = string<br/>    display_name            = optional(string)<br/>    reserved_ip_range       = optional(string)<br/>    customer_managed_key    = string<br/>    connect_mode            = optional(string)<br/>    replica_count           = optional(number)<br/>    read_replicas_mode      = optional(string)<br/>    redis_configs           = optional(map(string), {})<br/>    maintenance_policy = optional(object({<br/>      day     = string<br/>      hours   = number<br/>      minutes = number<br/>    }))<br/>    persistence_config = optional(object({<br/>      persistence_mode    = optional(string, "RDB")<br/>      rdb_snapshot_period = optional(string, "TWELVE_HOURS")<br/>    }), {})<br/>  })</pre> | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The GCP region to deploy the Redis instance in | `string` | n/a | yes |
 
 ## Outputs

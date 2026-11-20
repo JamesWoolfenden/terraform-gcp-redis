@@ -46,6 +46,11 @@ module "redis" {
     connect_mode            = "PRIVATE_SERVICE_ACCESS"
     reserved_ip_range       = google_compute_global_address.psa.name
     customer_managed_key    = google_kms_crypto_key.redis_key.id
+    maintenance_policy = {
+      day     = "SUNDAY"
+      hours   = 3
+      minutes = 0
+    }
   }
   region = "us-central1"
 
@@ -67,6 +72,8 @@ resource "google_kms_crypto_key" "redis_key" {
   name            = "redis-key-psa"
   key_ring        = google_kms_key_ring.redis_keyring.id
   rotation_period = "7776000s"
+  # 30-day recovery window before a destroyed key version is gone for good.
+  destroy_scheduled_duration = "2592000s"
   lifecycle {
     prevent_destroy = true
   }

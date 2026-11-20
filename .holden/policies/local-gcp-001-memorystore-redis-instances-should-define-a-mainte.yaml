@@ -1,0 +1,25 @@
+id: LOCAL_GCP_001
+name: Memorystore Redis instances should define a maintenance window
+principle: reliability
+severity: LOW
+rationale: |
+  Without a maintenance_policy, Google applies Memorystore maintenance at any
+  time. On STANDARD_HA this triggers a failover and on BASIC a full restart,
+  so unscheduled maintenance can land in business hours.
+message: |
+  google_redis_instance {{ .ID }} has no maintenance_policy.weekly_maintenance_window.
+remediation: |
+  Add a maintenance window:
+    maintenance_policy {
+      weekly_maintenance_window {
+        day = "SUNDAY"
+        start_time {
+          hours   = 3
+          minutes = 0
+        }
+      }
+    }
+resources:
+  google_redis_instance:
+    path: maintenance_policy
+    not_null: true

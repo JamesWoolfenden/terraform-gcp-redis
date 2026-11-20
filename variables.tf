@@ -62,6 +62,14 @@ variable "cache" {
     condition     = var.cache.read_replicas_mode != "READ_REPLICAS_ENABLED" || var.cache.replica_count != null
     error_message = "replica_count must be set when read_replicas_mode is READ_REPLICAS_ENABLED"
   }
+  validation {
+    condition     = var.cache.tier == "STANDARD_HA" || (var.cache.read_replicas_mode != "READ_REPLICAS_ENABLED" && coalesce(var.cache.replica_count, 0) == 0)
+    error_message = "read replicas (read_replicas_mode = READ_REPLICAS_ENABLED or replica_count > 0) require tier STANDARD_HA"
+  }
+  validation {
+    condition     = var.cache.persistence_config == null || contains(["DISABLED", "RDB"], try(var.cache.persistence_config.persistence_mode, ""))
+    error_message = "cache.persistence_config.persistence_mode must be DISABLED or RDB"
+  }
 }
 
 variable "region" {

@@ -1,0 +1,135 @@
+{
+  "category": "all",
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "The module declares and validates cache.connect_mode (DIRECT_PEERING|PRIVATE_SERVICE_ACCESS) but the resource sets connect_mode = \"PRIVATE_SERVICE_ACCESS\" literally, so the input is dead. example/examplea is documented (and holden:ignore'd for HLD_GCP_146) as a DIRECT_PEERING example and passes a CIDR reserved_ip_range (192.168.0.0/28); with PSA forced, reserved_ip_range must be the name of an allocated PSA range, so that example cannot apply as written. HLD_GCP_146/HLD_GCP_254 evaluate the hardcoded literal and so can never see what a caller actually asked for.",
+      "file": "google_redis_instance.tf",
+      "first_seen": "2026-11-20",
+      "fix": "connect_mode            = coalesce(var.cache.connect_mode, \"PRIVATE_SERVICE_ACCESS\")",
+      "fixable": true,
+      "id": "HOLDEN_AI_001",
+      "last_seen": "2026-11-20",
+      "line": 1,
+      "principle": "reliability",
+      "related_resources": [
+        "variable.cache",
+        "module.redis (example/examplea)"
+      ],
+      "remediation": "Use the input with PSA as the default: connect_mode = coalesce(var.cache.connect_mode, \"PRIVATE_SERVICE_ACCESS\"), and set connect_mode = \"DIRECT_PEERING\" explicitly in example/examplea.",
+      "resolution": "fixed: connect_mode = coalesce(var.cache.connect_mode, \"PRIVATE_SERVICE_ACCESS\") keeps PSA as the default for callers that omit it; example/examplea now sets connect_mode = \"DIRECT_PEERING\" (verified in tofu plan). Callers that already passed DIRECT_PEERING will now get it, which forces replacement of their instance.",
+      "resource": "google_redis_instance.pike",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "cache.connect_mode input is ignored: connect_mode is hardcoded to PRIVATE_SERVICE_ACCESS",
+      "unresolved_since": null
+    },
+    {
+      "confidence": "high",
+      "explanation": "Validations check read_replicas_mode values and that replica_count is set when READ_REPLICAS_ENABLED, but not that read replicas need STANDARD_HA. A BASIC instance with READ_REPLICAS_ENABLED (or replica_count > 0) passes validate/plan and is rejected by the Memorystore API at create time. Principle is a best fit: an apply-time correctness gap.",
+      "file": "variables.tf",
+      "first_seen": "2026-11-20",
+      "fix": "validation {\n  condition     = var.cache.tier == \"STANDARD_HA\" || (var.cache.read_replicas_mode != \"READ_REPLICAS_ENABLED\" && coalesce(var.cache.replica_count, 0) == 0)\n  error_message = \"read replicas (read_replicas_mode/replica_count) require tier STANDARD_HA\"\n}",
+      "fixable": true,
+      "id": "HOLDEN_AI_002",
+      "last_seen": "2026-11-20",
+      "line": 1,
+      "principle": "reliability",
+      "related_resources": [
+        "google_redis_instance.pike"
+      ],
+      "remediation": "Add a validation: var.cache.tier == \"STANDARD_HA\" || (var.cache.read_replicas_mode != \"READ_REPLICAS_ENABLED\" && coalesce(var.cache.replica_count, 0) == 0).",
+      "resolution": "fixed: added a cache validation in variables.tf requiring tier STANDARD_HA for read replicas.",
+      "resource": "variable.cache",
+      "severity": "LOW",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "Read replicas can be requested on BASIC tier; the module only fails at apply time",
+      "unresolved_since": null
+    },
+    {
+      "confidence": "high",
+      "explanation": "maintenance_policy is optional and null by default, so the dynamic block renders nothing and Google may apply maintenance (with a failover on STANDARD_HA) at any time, including business hours. Both STANDARD_HA examples omit it, so the module's documented usage ships without a window. No built-in holden policy covers google_redis_instance.maintenance_policy.",
+      "file": "example/examplea/module.redis.tf",
+      "first_seen": "2026-11-20",
+      "fix": "maintenance_policy = {\n  day     = \"SUNDAY\"\n  hours   = 3\n  minutes = 0\n}",
+      "fixable": true,
+      "id": "HOLDEN_AI_003",
+      "last_seen": "2026-11-20",
+      "line": 4,
+      "principle": "reliability",
+      "related_resources": [
+        "google_redis_instance.pike",
+        "module.redis (example/exampleb)"
+      ],
+      "remediation": "Set cache.maintenance_policy (e.g. { day = \"SUNDAY\", hours = 3, minutes = 0 }) in the examples; see suggested policy LOCAL_GCP_001.",
+      "resolution": "fixed: examplea and exampleb set maintenance_policy (SUNDAY 03:00); LOCAL_GCP_001 installed to enforce it. Module input stays optional (non-breaking).",
+      "resource": "module.redis",
+      "severity": "LOW",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "No maintenance window: the module defaults maintenance_policy to null and no example sets one",
+      "unresolved_since": null
+    },
+    {
+      "confidence": "medium",
+      "explanation": "persistence_config is optional and null, so instances run with persistence disabled: a full-instance failure or a BASIC-tier node loss drops all data with no snapshot to restore from. For a pure cache that is acceptable; for Redis used as a counter/session store (examplea is named \"counter\") it is data loss. Medium confidence: depends on the workload.",
+      "file": "google_redis_instance.tf",
+      "first_seen": "2026-11-20",
+      "fixable": false,
+      "id": "HOLDEN_AI_004",
+      "last_seen": "2026-11-20",
+      "line": 1,
+      "principle": "backup-and-recovery",
+      "related_resources": [
+        "module.redis (example/examplea)",
+        "module.redis (example/exampleb)"
+      ],
+      "remediation": "Enable RDB snapshots where data must survive: persistence_config = { persistence_mode = \"RDB\", rdb_snapshot_period = \"TWELVE_HOURS\" }. Validate persistence_mode values in variables.tf.",
+      "resolution": "partially addressed, left open: examplea now enables RDB persistence (TWELVE_HOURS) and variables.tf validates persistence_mode. The module default stays opt-in: forcing persistence on every caller is a behaviour change with no benefit for pure-cache workloads.",
+      "resource": "google_redis_instance.pike",
+      "severity": "LOW",
+      "status": "open",
+      "suppression_reason": null,
+      "title": "RDB persistence is off by default and in every example",
+      "unresolved_since": "2026-11-20"
+    },
+    {
+      "confidence": "high",
+      "explanation": "A plain `holden scan` only scans example/examplea for Terraform. examplec exists solely to exercise the redis-cluster policies (HLD_GCP_195/196) and exampleb is the only PSA path (google_compute_global_address + google_service_networking_connection), yet neither is ever evaluated by the default scan, so regressions there go unreported.",
+      "file": ".holden.yaml",
+      "first_seen": "2026-11-20",
+      "fix": "  - path: example/exampleb\n    targets: [terraform]\n  - path: example/examplec\n    targets: [terraform]",
+      "fixable": true,
+      "id": "HOLDEN_AI_005",
+      "last_seen": "2026-11-20",
+      "line": 57,
+      "principle": "maintainability",
+      "related_resources": [
+        "google_redis_cluster.main (example/examplec)",
+        "module.redis (example/exampleb)"
+      ],
+      "remediation": "Add example/exampleb and example/examplec to scan_roots with targets: [terraform].",
+      "resolution": "fixed: example/exampleb and example/examplec added to .holden.yaml scan_roots; the default scan now evaluates them (surfacing existing deterministic findings on examplec's network fixture).",
+      "resource": "scan_roots",
+      "severity": "LOW",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": ".holden.yaml scan_roots omit example/exampleb and example/examplec",
+      "unresolved_since": null
+    }
+  ],
+  "scan_date": "2026-11-20T00:00:00Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "first_seen": "2026-11-20",
+      "last_seen": "2026-11-20",
+      "rationale": "Missing maintenance_policy on google_redis_instance is a single-attribute, unambiguous check that applies to any Memorystore Redis instance, and no built-in policy covers it (coverage_by_type lists HLD_GCP_144/145/146/251/254/255/263/329, none on maintenance_policy).",
+      "status": "installed",
+      "yaml": "id: LOCAL_GCP_001\nname: Memorystore Redis instances should define a maintenance window\nprinciple: reliability\nseverity: LOW\nrationale: |\n  Without a maintenance_policy, Google applies Memorystore maintenance at any\n  time. On STANDARD_HA this triggers a failover and on BASIC a full restart,\n  so unscheduled maintenance can land in business hours.\nmessage: |\n  google_redis_instance {{ .ID }} has no maintenance_policy.weekly_maintenance_window.\nremediation: |\n  Add a maintenance window:\n    maintenance_policy {\n      weekly_maintenance_window {\n        day = \"SUNDAY\"\n        start_time {\n          hours   = 3\n          minutes = 0\n        }\n      }\n    }\nresources:\n  google_redis_instance:\n    path: maintenance_policy\n    not_null: true\n"
+    }
+  ],
+  "suggested_suppressions": []
+}

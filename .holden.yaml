@@ -39,8 +39,8 @@
 
 # Additional policy directories to load alongside the built-in set.
 # Paths are relative to this file. Adds to the built-in set, never replaces it.
-# policies:
-#   - .holden/policies
+policies:
+  - .holden/policies
 
 # Image registry prefixes trusted enough that a floating tag (e.g. :latest)
 # is downgraded from a HIGH finding to INFO instead of flagged outright.
@@ -58,4 +58,8 @@ scan_roots:
   - path: .
     targets: [gha]
   - path: example/examplea
+    targets: [terraform]
+  - path: example/exampleb
+    targets: [terraform]
+  - path: example/examplec
     targets: [terraform]

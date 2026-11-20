@@ -16,6 +16,16 @@ module "redis" {
     # /29 is only sufficient for BASIC tier.
     reserved_ip_range    = "192.168.0.0/28"
     customer_managed_key = google_kms_crypto_key.redis_key.id
+    connect_mode         = "DIRECT_PEERING"
+    maintenance_policy = {
+      day     = "SUNDAY"
+      hours   = 3
+      minutes = 0
+    }
+    persistence_config = {
+      persistence_mode    = "RDB"
+      rdb_snapshot_period = "TWELVE_HOURS"
+    }
   }
   region = "us-central1"
 
@@ -34,6 +44,8 @@ resource "google_kms_crypto_key" "redis_key" {
   name            = "redis-key"
   key_ring        = google_kms_key_ring.redis_keyring.id
   rotation_period = "7776000s"
+  # 30-day recovery window before a destroyed key version is gone for good.
+  destroy_scheduled_duration = "2592000s"
   lifecycle {
     prevent_destroy = true
   }
